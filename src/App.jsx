@@ -1,9 +1,39 @@
 import React, { useState, useMemo, useCallback, Fragment, useEffect, useRef } from 'react';
 
+const IconChevronLeft = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+  </svg>
+);
+
+const IconChevronRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+  </svg>
+);
+
+const IconList = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12M8.25 17.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+  </svg>
+);
+
+const IconMatrix = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15m-10.5-6h15m-15-6h15M3 10.5h15M3 13.5h15M3 16.5h15M3 19.5h15M3 7.5h15" />
+  </svg>
+);
+
+const IconDegrees = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+  </svg>
+);
+
 const NODE_RADIUS = 20;
 
 const AdjacencyListComponent = ({ list, isWeighted }) => (
-  <div className="font-mono text-sm text-gray-300">
+  <div className="font-mono text-sm text-gray-200">
     <h3 className="text-lg font-semibold text-white mb-2">Adjacency List</h3>
     {Object.keys(list).length === 0 ? (
       <p className="text-gray-400">No nodes in the graph.</p>
@@ -11,9 +41,9 @@ const AdjacencyListComponent = ({ list, isWeighted }) => (
       <ul className="space-y-1">
         {Object.entries(list).map(([node, neighbors]) => (
       <li key={node}>
-        <span className="font-bold text-cyan-400">{node}</span>
-        <span className="text-gray-400"> → </span>
-        <span className="text-lime-400">
+        <span className="font-bold text-fuchsia-400">{node}</span>
+        <span className="text-purple-400"> → </span>
+        <span className="text-amber-400">
           {neighbors.length ? 
             `[ ${neighbors.map(n => isWeighted ? `${n.target}(${n.weight})` : n.target).join(', ')} ]` : 
             '[ ]'
@@ -33,23 +63,23 @@ const AdjacencyMatrixComponent = ({ matrix, nodeIds, isWeighted }) => (
       <p className="font-mono text-sm text-gray-400">No nodes in the graph.</p>
     ) : (
       <div className="overflow-x-auto">
-        <table className="w-full text-center font-mono text-xs border-collapse border border-gray-700">
+        <table className="w-full text-center font-mono text-xs border-collapse border border-purple-800">
           <thead>
-            <tr className="bg-gray-900">
-              <th className="p-2 border border-gray-700"></th>
+            <tr className="bg-purple-950/50">
+              <th className="p-2 border border-purple-800"></th>
               {nodeIds.map(id => (
-                <th key={id} className="p-2 border border-gray-700 text-cyan-400">{id}</th>
+                <th key={id} className="p-2 border border-purple-800 text-fuchsia-400">{id}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {matrix.map((row, i) => (
-              <tr key={nodeIds[i]} className="odd:bg-gray-900/70 even:bg-gray-800/70">
-                <td className="p-2 border border-gray-700 font-bold text-cyan-400">{nodeIds[i]}</td>
+              <tr key={nodeIds[i]} className="bg-gray-950/40">
+                <td className="p-2 border border-purple-800 font-bold text-fuchsia-400">{nodeIds[i]}</td>
                 {row.map((cell, j) => (
                   <td
                     key={j}
-                    className={`p-2 border border-gray-700 ${cell > 0 ? 'text-lime-400 font-bold' : 'text-gray-400'}`}
+                    className={`p-2 border border-purple-800 ${cell > 0 ? 'text-amber-400 font-bold' : 'text-gray-600'}`}
                   >
                     {cell}
                   </td>
@@ -72,16 +102,16 @@ const VertexDegreesComponent = ({ degrees, nodeIds, allUndirected, isWeighted })
       <p className="font-mono text-sm text-gray-400">No nodes in the graph.</p>
     ) : (
       <div className="overflow-x-auto">
-        <table className="w-full text-center font-mono text-xs border-collapse border border-gray-700">
+        <table className="w-full text-center font-mono text-xs border-collapse border border-purple-800">
           <thead>
-            <tr className="bg-gray-900">
-              <th className="p-2 border border-gray-700 text-cyan-400">Node</th>
+            <tr className="bg-purple-950/50">
+              <th className="p-2 border border-purple-800 text-fuchsia-400">Node</th>
               {allUndirected ? (
-                <th className="p-2 border border-gray-700 text-lime-400">Degree</th>
+                <th className="p-2 border border-purple-800 text-amber-400">Degree</th>
               ) : (
                 <>
-                  <th className="p-2 border border-gray-700 text-lime-400">In-Degree</th>
-                  <th className="p-2 border border-gray-700 text-lime-400">Out-Degree</th>
+                  <th className="p-2 border border-purple-800 text-amber-400">In-Degree</th>
+                  <th className="p-2 border border-purple-800 text-amber-400">Out-Degree</th>
                 </>
               )}
             </tr>
@@ -90,14 +120,14 @@ const VertexDegreesComponent = ({ degrees, nodeIds, allUndirected, isWeighted })
             {nodeIds.map(id => {
               const nodeDegrees = degrees.get(id) || { in: 0, out: 0 };
               return (
-                <tr key={id} className="odd:bg-gray-900/70 even:bg-gray-800/70">
-                  <td className="p-2 border border-gray-700 font-bold text-cyan-400">{id}</td>
+                <tr key={id} className="bg-gray-950/40">
+                  <td className="p-2 border border-purple-800 font-bold text-fuchsia-400">{id}</td>
                   {allUndirected ? (
-                    <td className="p-2 border border-gray-700 text-gray-300">{nodeDegrees.in}</td>
+                    <td className="p-2 border border-purple-800 text-gray-100">{nodeDegrees.in}</td>
                   ) : (
                     <>
-                      <td className="p-2 border border-gray-700 text-gray-300">{nodeDegrees.in}</td>
-                      <td className="p-2 border border-gray-700 text-gray-300">{nodeDegrees.out}</td>
+                      <td className="p-2 border border-purple-800 text-gray-100">{nodeDegrees.in}</td>
+                      <td className="p-2 border border-purple-800 text-gray-100">{nodeDegrees.out}</td>
                     </>
                   )}
                 </tr>
@@ -119,7 +149,7 @@ const EdgeComponent = ({ edge, sourceNode, targetNode, animationSpeed, index, to
   const animDuration = (101 - animationSpeed) * 10; 
   
   const marker = edge.type === 'undirected' ? "" : "url(#arrow)";
-  const strokeColor = edge.type === 'undirected' ? "#db2777" : "#84cc16";
+  const strokeColor = edge.type === 'undirected' ? "#fbcfe8" : "#facc15"; 
 
   useEffect(() => {
     if (edge.status === 'visible' && status === 'new') {
@@ -127,13 +157,17 @@ const EdgeComponent = ({ edge, sourceNode, targetNode, animationSpeed, index, to
         if (pathRef.current) {
           pathRef.current.style.transition = `opacity ${animDuration}ms ease-out`;
           requestAnimationFrame(() => {
-            pathRef.current.style.opacity = 1;
+            if (pathRef.current) {
+              pathRef.current.style.opacity = 1;
+            }
           });
         }
         if (textRef.current) {
           textRef.current.style.transition = `opacity ${animDuration}ms ease-out`;
           requestAnimationFrame(() => {
-            textRef.current.style.opacity = 0.7; 
+            if (textRef.current) {
+              textRef.current.style.opacity = 1;
+            }
           });
         }
       });
@@ -153,7 +187,7 @@ const EdgeComponent = ({ edge, sourceNode, targetNode, animationSpeed, index, to
     }
   }, [edge.status, status, animDuration, isWeighted]);
 
-  let pathD = "";
+  let pathD = ""; 
 
   if (sourceNode.id === targetNode.id) {
     const nodeX = sourceNode.x;
@@ -223,7 +257,7 @@ const EdgeComponent = ({ edge, sourceNode, targetNode, animationSpeed, index, to
     }
   }
 
-  if (!pathD) return null;
+  if (!pathD) return null; 
 
   return (
     <Fragment>
@@ -233,11 +267,11 @@ const EdgeComponent = ({ edge, sourceNode, targetNode, animationSpeed, index, to
         fill="none"
         stroke={strokeColor}
         strokeWidth="2"
-        strokeOpacity="0.6"
+        strokeOpacity="0.9"
         markerEnd={marker}
         className="transition-opacity"
         style={{
-          opacity: 0,
+          opacity: 0, 
         }}
       />
       {isWeighted && (
@@ -270,7 +304,7 @@ export default function App() {
 
   const [nodeId, setNodeId] = useState('');
   const [removeNodeId, setRemoveNodeId] = useState('');
-  const [edgeSource, setEdgeSource] = useState('');
+  const [edgeSource, setEdgeSource] =useState('');
   const [edgeTarget, setEdgeTarget] = useState('');
   const [edgeWeight, setEdgeWeight] = useState(1);
   const [isUndirected, setIsUndirected] = useState(false);
@@ -282,6 +316,9 @@ export default function App() {
 
   const [draggingNode, setDraggingNode] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
 
   const adjacencyList = useMemo(() => {
     const list = {};
@@ -299,9 +336,9 @@ export default function App() {
     
     const sortedNodeIds = nodes.map(n => n.id).sort((a, b) => {
         if (allNumeric) {
-            return Number(a) - Number(b); // Numeric sort
+            return Number(a) - Number(b); 
         }
-        return String(a).localeCompare(String(b)); // String sort
+        return String(a).localeCompare(String(b)); 
     });
     
     const nodeIndex = new Map(sortedNodeIds.map((id, i) => [id, i]));
@@ -311,7 +348,7 @@ export default function App() {
       .map(() => Array(nodes.length).fill(0));
 
     edges.forEach(edge => {
-      if (edge.status === 'removing') return;
+      if (edge.status === 'removing') return; 
       const sourceIndex = nodeIndex.get(edge.source);
       const targetIndex = nodeIndex.get(edge.target);
       if (sourceIndex !== undefined && targetIndex !== undefined) {
@@ -368,15 +405,15 @@ export default function App() {
             canonicalKey = `${s}-${t}`;
             groupKey = edge.type === 'directed' ? 'directed' : 'undirected';
         } else {
-            if (s > t) [s, t] = [t, s];
+            if (s > t) [s, t] = [t, s]; 
             canonicalKey = `${s}-${t}`;
 
             if (edge.type === 'undirected') {
                 groupKey = 'undirected';
             } else if (edge.source === s) {
-                groupKey = 's_to_t_directed'; // s -> t
+                groupKey = 's_to_t_directed'; 
             } else {
-                groupKey = 't_to_s_directed'; // t -> s
+                groupKey = 't_to_s_directed'; 
             }
         }
         
@@ -391,7 +428,7 @@ export default function App() {
     });
 
     edges.filter(e => e.status === 'removing').forEach(edge => {
-        groups.set(edge.id, [edge]); // Keep removing edges separate by their unique ID
+        groups.set(edge.id, [edge]); 
     });
     
     return groups;
@@ -404,11 +441,10 @@ export default function App() {
         setEdges(currentEdges => 
           currentEdges.map(e => e.status === 'new' ? { ...e, status: 'visible' } : e)
         );
-      }, 10);
+      }, 10); 
       return () => clearTimeout(timer);
     }
   }, [edges]);
-
 
 
   useEffect(() => {
@@ -438,7 +474,7 @@ export default function App() {
     const x = 50 + Math.random() * 400;
     const y = 50 + Math.random() * 300;
     setNodes([...nodes, { id: nodeId, x, y }]);
-    setNodeId('');
+    setNodeId(''); 
   };
 
   const handleRemoveNode = (e) => {
@@ -454,7 +490,7 @@ export default function App() {
     }
     setNodes(nodes.filter(n => n.id !== removeNodeId));
     setEdges(edges.filter(e => e.source !== removeNodeId && e.target !== removeNodeId));
-    setRemoveNodeId('');
+    setRemoveNodeId(''); 
   };
 
   const handleAddEdge = (e) => {
@@ -476,7 +512,7 @@ export default function App() {
       id: `${edgeSource}-${edgeTarget}-${Math.random()}`, 
       source: edgeSource,
       target: edgeTarget,
-      status: 'new',
+      status: 'new', 
       type: isUndirected ? 'undirected' : 'directed',
       weight: weight
     });
@@ -512,17 +548,15 @@ export default function App() {
     const removeType = isRemoveUndirected ? 'undirected' : 'directed';
     
     const mappedEdges = edges.map(e => {
-      // Check for primary edge (Source -> Target)
       if (!primaryEdgeFound && 
           e.status !== 'removing' && 
           e.source === removeEdgeSource && 
           e.target === removeEdgeTarget &&
           e.type === removeType) {
         primaryEdgeFound = true;
-        return { ...e, status: 'removing' };
+        return { ...e, status: 'removing' }; 
       }
       
-      // Check for secondary edge (Target -> Source) if undirected
       if (isRemoveUndirected && 
           !secondaryEdgeFound && 
           e.status !== 'removing' && 
@@ -530,9 +564,9 @@ export default function App() {
           e.target === removeEdgeSource &&
           e.type === 'undirected') {
         secondaryEdgeFound = true;
-        return { ...e, status: 'removing' };
+        return { ...e, status: 'removing' }; 
       }
-      return e;
+      return e; 
     });
       
     if (!primaryEdgeFound) {
@@ -592,19 +626,52 @@ export default function App() {
     setDraggingNode(null);
   }, []);
 
+  const btnBase = "w-full font-bold py-2 px-4 rounded-md transition duration-200 ease-in-out border text-center";
+  const btnPrimary = `${btnBase} border-amber-500 text-amber-400 hover:bg-amber-500/20 hover:shadow-amber-500/30 hover:shadow-lg`;
+  const btnDanger = `${btnBase} border-pink-500 text-pink-400 hover:bg-pink-500/20 hover:shadow-pink-500/30 hover:shadow-lg`;
+  const btnClear = `${btnBase} border-red-500 text-red-400 hover:bg-red-500/20 hover:shadow-red-500/30 hover:shadow-lg`;
+  const inputBase = "w-full bg-gray-900/70 border border-purple-700 rounded-md p-2 text-white focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none";
+
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a1a] text-white font-sans antialiased">
-      <header className="flex-shrink-0 bg-black/30 border-b border-cyan-500/20 backdrop-blur-sm">
-        <h1 className="text-4xl font-black tracking-tight p-4 text-center bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+    <div 
+      className="flex flex-col h-screen text-gray-200 font-sans antialiased relative bg-cover bg-center"
+      style={{ 
+        backgroundColor: '#3b0764', 
+        backgroundImage: 'radial-gradient(at 20% 70%, #e831c1 0%, transparent 60%), radial-gradient(at 10% 90%, #ff9e00 0%, transparent 70%)'
+      }}
+    >
+      <header className="flex-shrink-0 bg-gray-950/60 border-b border-purple-700/50 backdrop-blur-sm z-10">
+        <h1 className="text-4xl font-black tracking-tight p-4 text-center bg-gradient-to-r from-amber-300 to-fuchsia-400 bg-clip-text text-transparent">
           Graph Visualizer
         </h1>
       </header>
+      
+      <button
+        onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+        title={isLeftSidebarOpen ? "Collapse Controls" : "Expand Controls"}
+        className="absolute top-1/2 -translate-y-1/2 left-0 z-20 p-2 bg-gray-900/80 text-amber-300 rounded-r-md transition-all hover:bg-gray-800"
+        style={{ transform: `translateY(-50%) translateX(${isLeftSidebarOpen ? '18rem' : '0'})` }} 
+      >
+        <IconChevronLeft className={`w-5 h-5 transition-transform ${isLeftSidebarOpen ? '' : 'rotate-180'}`} />
+      </button>
+
+      <button
+        onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+        title={isRightSidebarOpen ? "Collapse Data" : "Expand Data"}
+        className="absolute top-1/2 -translate-y-1/2 right-0 z-20 p-2 bg-gray-900/80 text-amber-300 rounded-l-md transition-all hover:bg-gray-800"
+        style={{ transform: `translateY(-50%) translateX(${isRightSidebarOpen ? '-24rem' : '0'})` }} 
+      >
+        <IconChevronRight className={`w-5 h-5 transition-transform ${isRightSidebarOpen ? '' : 'rotate-180'}`} />
+      </button>
 
       <div className="flex flex-1 overflow-hidden">
         
-        <aside className="w-72 p-4 bg-black/30 border-r border-cyan-500/20 backdrop-blur-sm overflow-y-auto space-y-6">
+        <aside 
+          className="flex-shrink-0 p-4 bg-gray-950/70 border-r border-purple-700/50 backdrop-blur-sm overflow-y-auto space-y-6 transition-all duration-300 ease-in-out"
+          style={{ width: isLeftSidebarOpen ? '18rem' : '0', padding: isLeftSidebarOpen ? '1rem' : '0', opacity: isLeftSidebarOpen ? 1 : 0, overflow: isLeftSidebarOpen ? 'auto' : 'hidden' }}
+        >
           {error && (
-            <div className="p-3 rounded-md bg-red-800 border border-red-600 text-white relative">
+            <div className="p-3 rounded-md bg-red-800/70 border border-red-600 text-white relative">
               <span className="font-medium">Error:</span> {error}
               <button
                 onClick={clearError}
@@ -616,62 +683,63 @@ export default function App() {
           )}
 
           <form onSubmit={handleAddNode} className="space-y-2">
-            <h3 className="text-lg font-semibold">Add Node</h3>
+            <h3 className="text-lg font-semibold text-white">Add Node</h3>
             <div>
-              <label htmlFor="nodeId" className="block text-sm font-medium text-gray-300 mb-1">Node ID</label>
+              <label htmlFor="nodeId" className="block text-sm font-medium text-gray-200 mb-1">Node ID</label>
               <input
                 id="nodeId"
                 type="text"
                 value={nodeId}
                 onChange={(e) => setNodeId(e.target.value)}
                 placeholder="e.g., D"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
-            <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out shadow-md shadow-cyan-600/20">
+            <button type="submit" className={btnPrimary}>
               Add Node
             </button>
           </form>
 
           <form onSubmit={handleRemoveNode} className="space-y-2">
-            <h3 className="text-lg font-semibold">Remove Node</h3>
+            <h3 className="text-lg font-semibold text-white">Remove Node</h3>
             <div>
-              <label htmlFor="removeNodeId" className="block text-sm font-medium text-gray-300 mb-1">Node ID</label>
+              <label htmlFor="removeNodeId" className="block text-sm font-medium text-gray-200 mb-1">Node ID</label>
               <input
                 id="removeNodeId"
                 type="text"
                 value={removeNodeId}
                 onChange={(e) => setRemoveNodeId(e.target.value)}
                 placeholder="e.g., A"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
-            <button type="submit" className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out shadow-md shadow-pink-600/20">
+            <button type="submit" className={btnDanger}>
               Remove Node
             </button>
           </form>
 
           <form onSubmit={handleClearGraph} className="space-y-2">
-             <h3 className="text-lg font-semibold">Clear Graph</h3>
-            <button type="submit" className="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out shadow-md shadow-red-700/20">
+             <h3 className="text-lg font-semibold text-white">Clear Graph</h3>
+            <button type="submit" className={btnClear}>
               Clear Entire Graph
             </button>
           </form>
 
-          <hr className="border-gray-600" />
+          <hr className="border-purple-700" />
 
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Graph Type</h3>
-            <div className="flex items-center justify-between p-2 bg-gray-900/50 border border-cyan-800 rounded-md">
-              <label htmlFor="isWeightedToggle" className="text-sm font-medium text-gray-300">
+            <h3 className="text-lg font-semibold text-white">Graph Type</h3>
+            <div className="flex items-center justify-between p-2 bg-gray-900/70 border border-purple-700 rounded-md">
+              <label htmlFor="isWeightedToggle" className="text-sm font-medium text-gray-200">
                 {isWeighted ? 'Weighted' : 'Unweighted'}
               </label>
               <button
                 type="button"
                 id="isWeightedToggle"
+                title={`Switch to ${isWeighted ? 'Unweighted' : 'Weighted'}`}
                 onClick={() => setIsWeighted(!isWeighted)}
                 className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors ${
-                  isWeighted ? 'bg-cyan-600' : 'bg-gray-700'
+                  isWeighted ? 'bg-amber-500' : 'bg-gray-700'
                 }`}
               >
                 <span
@@ -683,43 +751,43 @@ export default function App() {
             </div>
           </div>
           
-          <hr className="border-gray-600" />
+          <hr className="border-purple-700" />
 
           <form onSubmit={handleAddEdge} className="space-y-2">
-            <h3 className="text-lg font-semibold">Add Edge</h3>
+            <h3 className="text-lg font-semibold text-white">Add Edge</h3>
             <div>
-              <label htmlFor="edgeSource" className="block text-sm font-medium text-gray-300 mb-1">Source</label>
+              <label htmlFor="edgeSource" className="block text-sm font-medium text-gray-200 mb-1">Source</label>
               <input
                 id="edgeSource"
                 type="text"
                 value={edgeSource}
                 onChange={(e) => setEdgeSource(e.target.value)}
                 placeholder="e.g., A"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
             <div>
-              <label htmlFor="edgeTarget" className="block text-sm font-medium text-gray-300 mb-1">Target</label>
+              <label htmlFor="edgeTarget" className="block text-sm font-medium text-gray-200 mb-1">Target</label>
               <input
                 id="edgeTarget"
                 type="text"
                 value={edgeTarget}
                 onChange={(e) => setEdgeTarget(e.target.value)}
                 placeholder="e.g., B"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
             
             {isWeighted && (
               <div>
-                <label htmlFor="edgeWeight" className="block text-sm font-medium text-gray-300 mb-1">Weight</label>
+                <label htmlFor="edgeWeight" className="block text-sm font-medium text-gray-200 mb-1">Weight</label>
                 <input
                   id="edgeWeight"
                   type="number"
                   min="0"
                   value={edgeWeight}
                   onChange={(e) => setEdgeWeight(e.target.value)}
-                  className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  className={inputBase}
                 />
               </div>
             )}
@@ -730,37 +798,37 @@ export default function App() {
                 type="checkbox"
                 checked={isUndirected}
                 onChange={(e) => setIsUndirected(e.target.checked)}
-                className="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-500"
+                className="h-4 w-4 rounded bg-gray-800 border-purple-700 text-amber-500 focus:ring-amber-500"
               />
-              <label htmlFor="isUndirected" className="text-sm font-medium text-gray-300">Undirected</label>
+              <label htmlFor="isUndirected" className="text-sm font-medium text-gray-200">Undirected</label>
             </div>
-            <button type="submit" className="w-full bg-lime-500 hover:bg-lime-400 text-gray-900 font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out shadow-md shadow-lime-500/20">
+            <button type="submit" className={btnPrimary}>
               Add Edge
             </button>
           </form>
           
            <form onSubmit={handleRemoveEdge} className="space-y-2">
-            <h3 className="text-lg font-semibold">Remove Edge</h3>
+            <h3 className="text-lg font-semibold text-white">Remove Edge</h3>
             <div>
-              <label htmlFor="removeEdgeSource" className="block text-sm font-medium text-gray-300 mb-1">Source</label>
+              <label htmlFor="removeEdgeSource" className="block text-sm font-medium text-gray-200 mb-1">Source</label>
               <input
                 id="removeEdgeSource"
                 type="text"
                 value={removeEdgeSource}
                 onChange={(e) => setRemoveEdgeSource(e.target.value)}
                 placeholder="e.g., A"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
             <div>
-              <label htmlFor="removeEdgeTarget" className="block text-sm font-medium text-gray-300 mb-1">Target</label>
+              <label htmlFor="removeEdgeTarget" className="block text-sm font-medium text-gray-200 mb-1">Target</label>
               <input
                 id="removeEdgeTarget"
                 type="text"
                 value={removeEdgeTarget}
                 onChange={(e) => setRemoveEdgeTarget(e.target.value)}
                 placeholder="e.g., B"
-                className="w-full bg-gray-900/50 border border-cyan-800 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                className={inputBase}
               />
             </div>
             <div className="flex items-center space-x-2">
@@ -769,19 +837,19 @@ export default function App() {
                 type="checkbox"
                 checked={isRemoveUndirected}
                 onChange={(e) => setIsRemoveUndirected(e.target.checked)}
-                className="h-4 w-4 rounded bg-gray-700 border-gray-600 text-cyan-500 focus:ring-cyan-500"
+                className="h-4 w-4 rounded bg-gray-800 border-purple-700 text-amber-500 focus:ring-amber-500"
               />
-              <label htmlFor="isRemoveUndirected" className="text-sm font-medium text-gray-300">Undirected</label>
+              <label htmlFor="isRemoveUndirected" className="text-sm font-medium text-gray-200">Undirected</label>
             </div>
-            <button type="submit" className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out shadow-md shadow-pink-600/20">
+            <button type="submit" className={btnDanger}>
               Remove Edge
             </button>
           </form>
 
-          <hr className="border-gray-600" />
+          <hr className="border-purple-700" />
           
           <div className="space-y-2">
-            <label htmlFor="animationSpeed" className="block text-sm font-medium text-gray-300">
+            <label htmlFor="animationSpeed" className="block text-sm font-medium text-gray-200">
               Animation Speed
             </label>
             <input
@@ -791,7 +859,7 @@ export default function App() {
               max="100"
               value={animationSpeed}
               onChange={(e) => setAnimationSpeed(e.target.value)}
-              className="w-full accent-cyan-500"
+              className="w-full accent-amber-500"
             />
             <span className="text-xs text-gray-400">
               Controls edge add/remove speed
@@ -800,9 +868,9 @@ export default function App() {
 
         </aside>
 
-        <main className="flex-1 p-4 flex items-center justify-center">
+        <main className="flex-1 p-4 flex items-center justify-center transition-all duration-300 ease-in-out">
           <svg
-            className="w-full h-full border border-cyan-500/20 rounded-lg select-none"
+            className="w-full h-full border border-purple-700/50 rounded-lg select-none"
             onMouseMove={handleSvgMouseMove}
             onMouseUp={handleSvgMouseUp}
             onMouseLeave={handleSvgMouseLeave}
@@ -817,17 +885,25 @@ export default function App() {
                 markerHeight="6"
                 orient="auto-start-reverse"
               >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#84cc16" fillOpacity="0.6" />
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" fillOpacity="0.9" />
               </marker>
               <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="1" fill="#00ffff" fillOpacity="0.4" />
+                <circle cx="1" cy="1" r="1" fill="#d946ef" fillOpacity="0.6" />
               </pattern>
               <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#00ffff" floodOpacity="0.7" />
+                <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#e879f9" floodOpacity="0.7" />
               </filter>
+              <radialGradient id="nodeGradient" cx="0.5" cy="0.5" r="0.5" fx="0.25" fy="0.25">
+                <stop offset="0%" stopColor="#fb923c" /> 
+                <stop offset="100%" stopColor="#f97316" /> 
+              </radialGradient>
+              <radialGradient id="nodeGradientActive" cx="0.5" cy="0.5" r="0.5" fx="0.25" fy="0.25">
+                <stop offset="0%" stopColor="#ffffff" /> 
+                <stop offset="100%" stopColor="#fefce8" /> 
+              </radialGradient>
             </defs>
 
-            <rect width="100%" height="100%" fill="#0a0a1a" />
+            <rect width="100%" height="100%" fill="#1e0b38" fillOpacity="0.6" />
             <rect width="100%" height="100%" fill="url(#grid)" />
 
             <g>
@@ -939,12 +1015,12 @@ export default function App() {
                   transform={`translate(${node.x}, ${node.y})`}
                   className="cursor-pointer"
                   onMouseDown={(e) => handleNodeMouseDown(e, node.id)}
-                  filter="url(#shadow)"
+                  filter="url(#shadow)" 
                 >
                   <circle
                     r={NODE_RADIUS}
-                    fill={draggingNode === node.id ? "#ffffff" : "#0891b2"}
-                    stroke="#ffffff"
+                    fill={draggingNode === node.id ? "url(#nodeGradientActive)" : "url(#nodeGradient)"}
+                    stroke={draggingNode === node.id ? "#f0fdf4" : "#ffffff"}
                     strokeWidth="2"
                     className="transition-colors"
                   />
@@ -952,9 +1028,9 @@ export default function App() {
                   <text
                     textAnchor="middle"
                     dy=".3em"
-                    fill={draggingNode === node.id ? "#000000" : "#ffffff"}
+                    fill={draggingNode === node.id ? "#854d0e" : "#FFFFFF"}
                     className="font-mono font-bold select-none"
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: 'none' }} 
                   >
                     {node.id}
                   </text>
@@ -964,32 +1040,41 @@ export default function App() {
           </svg>
         </main>
 
-        <aside className="w-96 p-4 bg-black/30 border-l border-cyan-500/20 backdrop-blur-sm overflow-y-auto">
-          <div className="flex mb-4 rounded-md overflow-hidden">
+        <aside 
+          className="flex-shrink-0 p-4 bg-gray-950/70 border-l border-purple-700/50 backdrop-blur-sm overflow-y-auto transition-all duration-300 ease-in-out"
+          style={{ width: isRightSidebarOpen ? '24rem' : '0', padding: isRightSidebarOpen ? '1rem' : '0', opacity: isRightSidebarOpen ? 1 : 0, overflow: isRightSidebarOpen ? 'auto' : 'hidden' }}
+        >
+          <div className="flex mb-4 rounded-md overflow-hidden border border-purple-700/50">
             <button
               onClick={() => setViewMode('list')}
               data-active={viewMode === 'list'}
-              className={`flex-1 p-2 font-medium text-xs sm:text-sm transition-colors data-[active=true]:bg-cyan-600 data-[active=true]:text-white data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60`}
+              title="Adjacency List"
+              className={`flex-1 p-2 font-medium transition-colors data-[active=true]:bg-amber-500 data-[active=true]:text-gray-900 data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60 flex items-center justify-center space-x-2`}
             >
-              List
+              <IconList className="w-5 h-5" />
+              <span>List</span>
             </button>
             <button
               onClick={() => setViewMode('matrix')}
               data-active={viewMode === 'matrix'}
-              className={`flex-1 p-2 font-medium text-xs sm:text-sm transition-colors data-[active=true]:bg-cyan-600 data-[active=true]:text-white data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60 border-l border-r border-cyan-500/20`}
+              title="Adjacency Matrix"
+              className={`flex-1 p-2 font-medium transition-colors data-[active=true]:bg-amber-500 data-[active=true]:text-gray-900 data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60 border-l border-r border-purple-700/50 flex items-center justify-center space-x-2`}
             >
-              Matrix
+              <IconMatrix className="w-5 h-5" />
+              <span>Matrix</span>
             </button>
              <button
               onClick={() => setViewMode('degree')}
               data-active={viewMode === 'degree'}
-              className={`flex-1 p-2 font-medium text-xs sm:text-sm transition-colors data-[active=true]:bg-cyan-600 data-[active=true]:text-white data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60`}
+              title="Vertex Degrees"
+              className={`flex-1 p-2 font-medium transition-colors data-[active=true]:bg-amber-500 data-[active=true]:text-gray-900 data-[active=false]:bg-gray-900/50 data-[active=false]:text-gray-300 data-[active=false]:hover:bg-gray-800/60 flex items-center justify-center space-x-2`}
             >
-              Degrees
+              <IconDegrees className="w-5 h-5" />
+              <span>Degree</span>
             </button>
           </div>
 
-          <div className="p-4 bg-gray-950/70 rounded-md min-h-[200px]">
+          <div className="p-4 bg-gray-950/70 rounded-md min-h-[200px] border border-purple-800/50">
             {viewMode === 'list' ? (
               <AdjacencyListComponent list={adjacencyList} isWeighted={isWeighted} />
             ) : viewMode === 'matrix' ? (
