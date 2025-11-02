@@ -51,7 +51,7 @@ const AdjacencyMatrixComponent = ({ matrix, nodeIds, isWeighted }) => (
                     key={j}
                     className={`p-2 border border-gray-700 ${cell > 0 ? 'text-lime-400 font-bold' : 'text-gray-400'}`}
                   >
-                    {isWeighted ? cell : (cell > 0 ? 1 : 0)}
+                    {cell}
                   </td>
                 ))}
               </tr>
@@ -295,7 +295,15 @@ export default function App() {
   }, [nodes, edges]);
 
   const { matrix, sortedNodeIds } = useMemo(() => {
-    const sortedNodeIds = nodes.map(n => n.id).sort();
+    const allNumeric = nodes.length > 0 && nodes.every(n => !isNaN(Number(n.id)) && n.id.trim() !== '');
+    
+    const sortedNodeIds = nodes.map(n => n.id).sort((a, b) => {
+        if (allNumeric) {
+            return Number(a) - Number(b); // Numeric sort
+        }
+        return String(a).localeCompare(String(b)); // String sort
+    });
+    
     const nodeIndex = new Map(sortedNodeIds.map((id, i) => [id, i]));
     
     const matrix = Array(nodes.length)
@@ -307,11 +315,10 @@ export default function App() {
       const sourceIndex = nodeIndex.get(edge.source);
       const targetIndex = nodeIndex.get(edge.target);
       if (sourceIndex !== undefined && targetIndex !== undefined) {
-        if (isWeighted) {
-          matrix[sourceIndex][targetIndex] += (edge.weight || 1);
-        } else {
-          matrix[sourceIndex][targetIndex] = 1; 
-        }
+        
+        const valueToAdd = isWeighted ? (edge.weight || 1) : 1;
+        matrix[sourceIndex][targetIndex] += valueToAdd;
+        
       }
     });
 
@@ -367,9 +374,9 @@ export default function App() {
             if (edge.type === 'undirected') {
                 groupKey = 'undirected';
             } else if (edge.source === s) {
-                groupKey = 's_to_t_directed'; 
+                groupKey = 's_to_t_directed'; // s -> t
             } else {
-                groupKey = 't_to_s_directed'; 
+                groupKey = 't_to_s_directed'; // t -> s
             }
         }
         
@@ -384,7 +391,7 @@ export default function App() {
     });
 
     edges.filter(e => e.status === 'removing').forEach(edge => {
-        groups.set(edge.id, [edge]);
+        groups.set(edge.id, [edge]); // Keep removing edges separate by their unique ID
     });
     
     return groups;
@@ -401,6 +408,8 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [edges]);
+
+
 
   useEffect(() => {
     const removingEdgesExist = edges.some(e => e.status === 'removing');
@@ -503,6 +512,7 @@ export default function App() {
     const removeType = isRemoveUndirected ? 'undirected' : 'directed';
     
     const mappedEdges = edges.map(e => {
+      // Check for primary edge (Source -> Target)
       if (!primaryEdgeFound && 
           e.status !== 'removing' && 
           e.source === removeEdgeSource && 
@@ -511,7 +521,8 @@ export default function App() {
         primaryEdgeFound = true;
         return { ...e, status: 'removing' };
       }
-
+      
+      // Check for secondary edge (Target -> Source) if undirected
       if (isRemoveUndirected && 
           !secondaryEdgeFound && 
           e.status !== 'removing' && 
@@ -584,7 +595,7 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-[#0a0a1a] text-white font-sans antialiased">
       <header className="flex-shrink-0 bg-black/30 border-b border-cyan-500/20 backdrop-blur-sm">
-        <h1 className="text-4xl font-black tracking-tight p-4 text-center bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-black tracking-tight p-4 text-center bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           Graph Visualizer
         </h1>
       </header>
@@ -771,7 +782,7 @@ export default function App() {
           
           <div className="space-y-2">
             <label htmlFor="animationSpeed" className="block text-sm font-medium text-gray-300">
-              Animation Speed
+              Animation Speed (Fast → Slow)
             </label>
             <input
               id="animationSpeed"
@@ -861,7 +872,7 @@ export default function App() {
                       const arcTotal = groupsToRender.length;
                       
                       return (
-                          <Fragment>
+                          <Fragment key={key}>
                               {groupsToRender.map((g, arcGroupIndex) => {
                                   let edgesToMap = g.edges;
                                   if (g.type === 'undirected') {
@@ -901,8 +912,9 @@ export default function App() {
                   const arcTotal = groupsToRender.length;
                   
                   return groupsToRender.map((g, arcGroupIndex) => (
-                      g.edges.map((edge, index) => (
-                          <EdgeComponent
+                      <Fragment key={arcGroupIndex}>
+                        {g.edges.map((edge, index) => (
+                            <EdgeComponent
                             key={edge.id}
                             edge={edge}
                             sourceNode={g.source}
@@ -913,8 +925,9 @@ export default function App() {
                             isWeighted={isWeighted}
                             arcGroup={arcGroupIndex}
                             arcTotal={arcTotal}
-                          />
-                      ))
+                            />
+                        ))}
+                      </Fragment>
                   ));
               })}
             </g>
@@ -935,6 +948,7 @@ export default function App() {
                     strokeWidth="2"
                     className="transition-colors"
                   />
+
                   <text
                     textAnchor="middle"
                     dy=".3em"
@@ -994,4 +1008,3 @@ export default function App() {
     </div>
   );
 }
-
