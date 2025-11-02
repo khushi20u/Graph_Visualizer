@@ -595,7 +595,7 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-[#0a0a1a] text-white font-sans antialiased">
       <header className="flex-shrink-0 bg-black/30 border-b border-cyan-500/20 backdrop-blur-sm">
-        <h1 className="text-3xl font-black tracking-tight p-4 text-center bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-black tracking-tight p-4 text-center bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           Graph Visualizer
         </h1>
       </header>
@@ -782,7 +782,7 @@ export default function App() {
           
           <div className="space-y-2">
             <label htmlFor="animationSpeed" className="block text-sm font-medium text-gray-300">
-              Animation Speed (Fast → Slow)
+              Animation Speed
             </label>
             <input
               id="animationSpeed"
